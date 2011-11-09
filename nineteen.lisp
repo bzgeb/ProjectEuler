@@ -3,6 +3,24 @@
 (defvar first-sunday)
 (defvar current-date)
 
+(defparameter *sunday-counter* (let ((count 0))
+                                    (list #'(lambda() (setf count (+ count 1)))
+                                          #'(lambda() (setf count (- count 1)))
+                                          #'(lambda() count))))
+
+
+(defun increase-counter (counter)
+    (funcall (car counter)))
+
+
+(defun decrease-counter (counter)
+    (funcall (car (cdr counter))))
+
+
+(defun get-counter (counter)
+    (funcall (car (cddr counter))))
+
+
 (defun days-in-february (year)
     (cond ((null year) nil)
           ((= 1900 year) 28)
@@ -51,6 +69,6 @@
 (loop while (> 2001 (get-year current-date))
     do (setf current-date (add-days 7 current-date))
     (format t "~a~%" current-date)
-    (if (= 1 (get-day current-date)) (setf sunday-counter (+ 1 sunday-counter)) nil))
+    (if (= 1 (get-day current-date)) (increase-counter *sunday-counter*) nil))
 
-(format t "~D~%" sunday-counter)
+(format t "~D~%" (get-counter *sunday-counter*))
